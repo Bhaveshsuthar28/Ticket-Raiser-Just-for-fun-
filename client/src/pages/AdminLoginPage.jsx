@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiFetch } from '../api/client.js';
 
@@ -8,17 +8,27 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
+  useEffect(() => {
+    const token = localStorage.getItem('adminToken');
+    if (token) navigate('/admin/tickets', { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   async function login(e) {
     e.preventDefault();
     setError('');
 
-    const data = await apiFetch('/api/admin/login', {
-      method: 'POST',
-      body: { username, password }
-    });
+    try {
+      const data = await apiFetch('/api/admin/login', {
+        method: 'POST',
+        body: { username, password }
+      });
 
-    localStorage.setItem('adminToken', data.token);
-    navigate('/admin/tickets');
+      localStorage.setItem('adminToken', data.token);
+      navigate('/admin/tickets');
+    } catch (e) {
+      setError(e.message || 'Login failed');
+    }
   }
 
   return (
@@ -54,9 +64,7 @@ export default function AdminLoginPage() {
 
       {error ? <div className="mt-3 text-sm text-red-200">{error}</div> : null}
 
-      <div className="mt-3 text-xs text-white/60">
-        Use `npm run seed` to create the default admin in MongoDB.
-      </div>
+      <div className="mt-3 text-xs text-white/60">Enter admin username and password.</div>
     </div>
   );
 }

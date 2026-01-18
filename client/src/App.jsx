@@ -5,6 +5,8 @@ import AdminLoginPage from './pages/AdminLoginPage.jsx';
 import AdminTicketsPage from './pages/AdminTicketsPage.jsx';
 
 export default function App() {
+  const adminTarget = localStorage.getItem('adminToken') ? '/admin/tickets' : '/admin';
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
       <div className="mx-auto max-w-5xl px-4 py-6">
@@ -12,7 +14,7 @@ export default function App() {
           <div className="text-lg font-semibold tracking-tight">Ticket System</div>
           <nav className="flex items-center gap-4 text-sm">
             <Link className="text-indigo-200 hover:text-indigo-100" to="/">Visitor</Link>
-            <Link className="text-indigo-200 hover:text-indigo-100" to="/admin">Admin</Link>
+            <Link className="text-indigo-200 hover:text-indigo-100" to={adminTarget}>Admin</Link>
           </nav>
         </header>
 

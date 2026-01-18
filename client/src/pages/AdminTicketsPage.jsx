@@ -41,6 +41,17 @@ export default function AdminTicketsPage() {
     setSuccess('Ticket resolved.');
   }
 
+  async function deleteTicket(id) {
+    setError('');
+    setSuccess('');
+    await apiFetch(`/api/admin/tickets/${id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    setTickets((prev) => prev.filter((t) => t._id !== id));
+    setSuccess('Ticket deleted.');
+  }
+
   function logout() {
     localStorage.removeItem('adminToken');
     navigate('/admin');
@@ -94,7 +105,7 @@ export default function AdminTicketsPage() {
             <div className="mt-3 whitespace-pre-wrap text-sm text-white/90">{t.message}</div>
             <div className="mt-3 text-xs text-white/60">Ticket ID: {t._id}</div>
 
-            <div className="mt-4 flex justify-end">
+            <div className="mt-4 flex justify-end gap-2">
               {t.status !== 'resolved' ? (
                 <button
                   type="button"
@@ -104,6 +115,13 @@ export default function AdminTicketsPage() {
                   Resolve
                 </button>
               ) : null}
+              <button
+                type="button"
+                className="rounded-xl border border-white/10 px-4 py-2 text-sm text-white/90 hover:bg-white/5"
+                onClick={() => deleteTicket(t._id)}
+              >
+                Delete
+              </button>
             </div>
           </div>
         ))}
